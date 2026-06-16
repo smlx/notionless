@@ -2,6 +2,9 @@
 package main
 
 import (
+	"errors"
+	"os"
+
 	"github.com/alecthomas/kong"
 )
 
@@ -19,5 +22,9 @@ func main() {
 	kctx := kong.Parse(&cli,
 		kong.UsageOnError(),
 	)
-	kctx.FatalIfErrorf(kctx.Run(&cli))
+	err := kctx.Run(&cli)
+	if errors.Is(err, ErrDiffFound) {
+		os.Exit(2)
+	}
+	kctx.FatalIfErrorf(err)
 }

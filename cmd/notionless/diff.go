@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/smlx/notionless/internal/markdown"
@@ -12,6 +13,8 @@ import (
 type DiffCmd struct {
 	File string `kong:"arg,help='Path to the markdown file'"`
 }
+
+var ErrDiffFound = errors.New("differences found")
 
 // Run the diff command.
 func (cmd *DiffCmd) Run(cli *CLI) error {
@@ -30,7 +33,7 @@ func (cmd *DiffCmd) Run(cli *CLI) error {
 		textdiff.TerminalColors())
 	if diffString != "" {
 		fmt.Print(diffString)
-		return fmt.Errorf("differences found")
+		return ErrDiffFound
 	}
 	return nil
 }
